@@ -2,7 +2,7 @@
 
 De tre fallen som demot bygger på.
 
-Fall 1 och 2 är transkriberingar av skärmdumparna från diariet (`docs/Test Korrekt Metadata.png`, `docs/Test Korrekt Skärmdump.png`, `docs/Test Felaktigt Skärmdump 1.png`, `docs/Test Felaktigt Skärmdump 2.png`): ett korrekt referensfall och ett med fel som markerats för hand i rött. Fall 3 är konstruerat — det finns ingen skärmdump — och är gränsfallet som ska flaggas för mänsklig bedömning.
+Fall 1 och 2 är transkriberingar av skärmdumparna från diariet (`docs/png/Test Korrekt Metadata.png`, `docs/png/Test Korrekt Skärmdump.png`, `docs/png/Test Felaktigt Skärmdump 1.png`, `docs/png/Test Felaktigt Skärmdump 2.png`): ett korrekt referensfall och ett med fel som markerats för hand i rött. Fall 3 är konstruerat — det finns ingen skärmdump — och är gränsfallet som ska flaggas för mänsklig bedömning.
 
 | # | Fall | Ärende | Förväntat utfall |
 |---|------|--------|------------------|
