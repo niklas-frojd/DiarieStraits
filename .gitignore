@@ -3,6 +3,10 @@
 __pycache__/
 .pytest_cache/
 
+# Hemligheter (ANTHROPIC_API_KEY)
+.env
+.env.*
+
 # OS / editor noise
 .DS_Store
 Thumbs.db
