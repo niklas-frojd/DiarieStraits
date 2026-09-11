@@ -13,11 +13,11 @@ Handläggare – hanterar ärendet vidare och drabbas av fel i metadata; primär
 
 ## Måsten (3–5)
 
-Granska och kvalitetssäkra metadata mot den definierade klassificeringsmodellen/regelverket.
-Identifiera fel, avvikelser och saknad information i metadatan.
-Föreslå eller genomföra rättningar – rätta automatiskt vid tydliga, regelbaserade fel (t.ex. formaterings- eller kodfel), föreslå rättning som en människa godkänner vid mer osäkra fall.
-Förklara varför något har flaggats eller ändrats, på ett sätt en registrator/handläggare förstår.
-Markera ärenden som kräver mänsklig bedömning, så AI:n aldrig avgör tveksamma fall på egen hand.
+- **M1.** Granska och kvalitetssäkra metadata mot den definierade klassificeringsmodellen/regelverket.
+- **M2.** Identifiera fel, avvikelser och saknad information i metadatan.
+- **M3.** Föreslå eller genomföra rättningar – rätta automatiskt vid tydliga, regelbaserade fel (t.ex. formaterings- eller kodfel), föreslå rättning som en människa godkänner vid mer osäkra fall.
+- **M4.** Förklara varför något har flaggats eller ändrats, på ett sätt en registrator/handläggare förstår.
+- **M5.** Markera ärenden som kräver mänsklig bedömning, så AI:n aldrig avgör tveksamma fall på egen hand.
 
 ## Utanför
 
