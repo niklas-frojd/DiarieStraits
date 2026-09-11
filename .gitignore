@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Miljön som uv riggar
+.venv/
+
+# macOS
+.DS_Store

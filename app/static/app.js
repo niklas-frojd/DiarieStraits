@@ -19,10 +19,23 @@ const DETALJFALT = [
   ["process", "Process"],
 ];
 
+// Sammanfattningen överst i kontrollpanelen, en rad per samlad status ur motorn.
+const STATUSTEXT = {
+  rent: "Inga anmärkningar. Metadatan passerar kvalitetskontrollen.",
+  "rättat": "Rättat automatiskt. Inget kräver mänsklig bedömning.",
+  "förslag": "Förslag att godkänna eller avvisa.",
+  "kräver_bedömning": "Kräver mänsklig bedömning innan ärendet går vidare.",
+};
+
 const listvy = document.getElementById("listvy");
 const detaljvy = document.getElementById("detaljvy");
 const brodsmula = document.getElementById("brodsmula");
 const tillbaka = document.getElementById("tillbaka");
+const granskaKnapp = document.getElementById("granska");
+const granskningsstatus = document.getElementById("granskningsstatus");
+const fyndlista = document.getElementById("fyndlista");
+
+let oppetArende = "";
 
 function text(varde) {
   return varde === null || varde === undefined ? "" : String(varde);
@@ -30,11 +43,14 @@ function text(varde) {
 
 function definitionslista(element, rader) {
   element.replaceChildren();
-  for (const [etikett, varde] of rader) {
+  for (const [etikett, varde, klass] of rader) {
     const dt = document.createElement("dt");
     dt.textContent = etikett + ":";
     const dd = document.createElement("dd");
     dd.textContent = text(varde);
+    if (klass) {
+      dd.className = klass;
+    }
     element.append(dt, dd);
   }
 }
@@ -55,9 +71,15 @@ function sattBrodsmula(delar) {
 }
 
 async function visaLista() {
-  const arenden = await fetch("/api/arenden").then((r) => r.json());
   const rader = document.getElementById("listrader");
   rader.replaceChildren();
+  let arenden = [];
+  try {
+    arenden = await fetch("/api/arenden").then((r) => r.json());
+  } catch (fel) {
+    sattBrodsmula(["Kunde inte hämta ärendena: " + fel.message]);
+    return;
+  }
   for (const arende of arenden) {
     const tr = document.createElement("tr");
     for (const falt of ["arendenummer", "titel", "dokumentkategori", "ankomstdatum", "status"]) {
@@ -77,6 +99,23 @@ async function visaLista() {
   tillbaka.hidden = true;
 }
 
+function visaDetaljer(dok, rattadeFalt) {
+  definitionslista(
+    document.getElementById("detaljer"),
+    DETALJFALT.map(([nyckel, etikett]) => [
+      etikett,
+      dok.detaljer[nyckel],
+      rattadeFalt.has(nyckel) ? "rattad" : "",
+    ])
+  );
+}
+
+function nollstallGranskning() {
+  granskningsstatus.hidden = true;
+  fyndlista.hidden = true;
+  fyndlista.replaceChildren();
+}
+
 async function visaArende(arendenummer) {
   const svar = await fetch("/api/arenden/" + arendenummer);
   if (!svar.ok) {
@@ -85,11 +124,10 @@ async function visaArende(arendenummer) {
   }
   const arende = await svar.json();
   const dok = arende.dokument;
+  oppetArende = arende.arendenummer;
+  nollstallGranskning();
 
-  definitionslista(
-    document.getElementById("detaljer"),
-    DETALJFALT.map(([nyckel, etikett]) => [etikett, dok.detaljer[nyckel]])
-  );
+  visaDetaljer(dok, new Set());
   definitionslista(
     document.getElementById("kontakter"),
     dok.kontakter.map((k) => [
@@ -121,6 +159,72 @@ async function visaArende(arendenummer) {
   tillbaka.hidden = false;
 }
 
+function fyndrad(fynd) {
+  const li = document.createElement("li");
+  li.className = "fynd-" + fynd.utfall.replace("ä", "a").replace("ö", "o");
+
+  const rubrik = document.createElement("p");
+  rubrik.className = "fyndrubrik";
+  const markning = document.createElement("span");
+  markning.className = "markning";
+  markning.textContent = fynd.utfall.replace("_", " ");
+  rubrik.append(markning, document.createTextNode(fynd.etikett));
+  li.append(rubrik);
+
+  const forklaring = document.createElement("p");
+  forklaring.textContent = fynd.forklaring;
+  li.append(forklaring);
+
+  if (fynd.utfall === "rättad") {
+    const andring = document.createElement("p");
+    andring.className = "andring";
+    andring.textContent = (fynd.fore || "(tomt)") + " → " + (fynd.efter || "(tomt)");
+    li.append(andring);
+  }
+
+  const regel = document.createElement("p");
+  regel.className = "regel";
+  regel.textContent = "Regel: " + fynd.regel;
+  li.append(regel);
+
+  return li;
+}
+
+function visaRapport(rapport) {
+  const rattadeFalt = new Set(
+    rapport.fynd.filter((f) => f.utfall === "rättad").map((f) => f.falt)
+  );
+  visaDetaljer(rapport.arende.dokument, rattadeFalt);
+
+  granskningsstatus.className = "status status-" + rapport.status.replace("ä", "a").replace("ö", "o");
+  granskningsstatus.textContent = STATUSTEXT[rapport.status] || rapport.status;
+  granskningsstatus.hidden = false;
+
+  fyndlista.replaceChildren(...rapport.fynd.map(fyndrad));
+  fyndlista.hidden = rapport.fynd.length === 0;
+}
+
+async function granska() {
+  granskaKnapp.disabled = true;
+  granskaKnapp.textContent = "Granskar…";
+  try {
+    const svar = await fetch("/api/arenden/" + oppetArende + "/kvalitetsgranska", {
+      method: "POST",
+    });
+    if (!svar.ok) {
+      throw new Error("servern svarade " + svar.status);
+    }
+    visaRapport(await svar.json());
+  } catch (fel) {
+    granskningsstatus.className = "status status-kraver_bedomning";
+    granskningsstatus.textContent = "Granskningen gick inte att köra: " + fel.message;
+    granskningsstatus.hidden = false;
+  } finally {
+    granskaKnapp.disabled = false;
+    granskaKnapp.textContent = "Kvalitetsgranska";
+  }
+}
+
 function dirigera() {
   const match = location.pathname.match(/^\/arende\/(.+)$/);
   if (match) {
@@ -129,6 +233,8 @@ function dirigera() {
     visaLista();
   }
 }
+
+granskaKnapp.addEventListener("click", granska);
 
 tillbaka.addEventListener("click", (e) => {
   e.preventDefault();
