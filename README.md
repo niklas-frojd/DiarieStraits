@@ -43,6 +43,12 @@ uv run pytest -k <regelnamn>           # en enskild regel
 öppnar ärendedokumentet med panelerna Filer, Detaljer och Kontakter, i samma
 fältordning som Janus.
 
+Knappen **Kvalitetsgranska** kör regelmotorn på det öppna ärendet. Varje fynd
+får en förklaring och ett av fyra utfall: rättat automatiskt, förslag att godkänna
+eller avvisa, kräver mänsklig bedömning, eller orört. Ärenden som kräver bedömning
+spärras med en banner, och varje åtgärd lämnar en loggrad med regel, före- och
+efter-värde och tidpunkt.
+
 Tre testärenden bär demot, i den här ordningen:
 
 | Ärende | Fall | Vad det visar |
@@ -57,12 +63,19 @@ Fälten står i `docs/markdown/testfall-metadata.md`.
 
 ```
 app/
-  main.py            FastAPI: API-rutter och den statiska vyn
-  data.py            läser och slår upp testdata
-  data/arenden.json  de tre ärendena, fält för fält
-  static/            index.html, app.js, style.css — inget byggsteg
-tests/               pytest mot API:t
-docs/markdown/       PRD, beslut, plan, testfall, friktionslogg
+  main.py                     FastAPI: API-rutter och den statiska vyn
+  data.py                     läser och slår upp testdata
+  data/arenden.json           de tre ärendena, fält för fält
+  data/klassificering.json    den mockade kodlistan: 2.3.1, 2.3.1-5, 6.1, 6.1-1
+  kontroller/                 regelmotorn — en Checker per kontrollområde
+    motor.py                  REGISTER: kör alla Checkers och samlar fynden
+    modell.py                 Fynd och de fyra utfallen
+    falt.py datum.py          obligatoriska fält, datumformat, "Kopia till"
+    klassificering.py         handlingstyp, process och riktning mot kodlistan
+    titel.py gransfall.py     titelheuristik och de konstruerade gränsfallen
+  static/                     index.html, app.js, style.css — inget byggsteg
+tests/                        pytest mot API:t och per regel
+docs/markdown/                PRD, beslut, plan, testfall, friktion, granskning
 docs/png/ docs/docx/ skärmdumpar och underlag från Janus
 ```
 
@@ -76,10 +89,23 @@ docs/png/ docs/docx/ skärmdumpar och underlag från Janus
 | `docs/markdown/testfall-metadata.md` | De tre testärendena, fält för fält — källan för testdata |
 | `docs/markdown/handbok-kort.md` | Hackathon-handbokens sex kort |
 | `docs/markdown/friction.md` | Friktionslogg: vad som skavde under bygget |
+| `docs/markdown/review.md` | Granskningens fynd, en rubrik per tillfälle |
 | `AGENTS.md` | Instruktionsfilen som AI-sessionerna läser |
 
 ## Status
 
-Inkrement 1 är klart: skelettet med ärendelista och detaljvy. Regelmotorn och
-kontrollerna byggs i inkrement 2 och framåt — aktuell status står i
-`docs/markdown/plan.md`, en rad per inkrement.
+Alla fem inkrement i `docs/markdown/plan.md` är klara, och `uv run pytest` ger
+96 gröna tester.
+
+| # | Inkrement | Status |
+|---|-----------|--------|
+| 1 | Skelett: ärendelista och detaljvy | Klar |
+| 2 | Regelmotor: fält- och formatkontroller | Klar |
+| 3 | Klassificerings- och riktningskontroller | Klar |
+| 4 | Förklaring, förslag och mänsklig bedömning | Klar |
+| 5 | Titelkontroll, heuristik | Klar |
+
+Två saker att veta inför demot: klickkontrollerna för inkrement 2 och 4 är inte
+körda — servern fick inte binda port i de sessionerna (`friction.md`) — och
+titelheuristiken ger falska träffar som står beskrivna på samma ställe. En rad
+per inkrement, med scenario och kontroll, står i `docs/markdown/plan.md`.
