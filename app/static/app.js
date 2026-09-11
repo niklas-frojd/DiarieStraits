@@ -34,8 +34,17 @@ const tillbaka = document.getElementById("tillbaka");
 const granskaKnapp = document.getElementById("granska");
 const granskningsstatus = document.getElementById("granskningsstatus");
 const fyndlista = document.getElementById("fyndlista");
+const spärr = document.getElementById("spärr");
+const loggpanel = document.getElementById("logg");
+const loggrader = document.getElementById("loggrader");
+const loggantal = document.getElementById("loggantal");
 
 let oppetArende = "";
+// Rapporten lever i webbläsaren under demot: godkända förslag skrivs aldrig
+// tillbaka till testdatan, så ärendet går att granska om från början.
+let oppetDokument = null;
+let rattadeFalt = new Set();
+let logg = [];
 
 function text(varde) {
   return varde === null || varde === undefined ? "" : String(varde);
@@ -99,21 +108,55 @@ async function visaLista() {
   tillbaka.hidden = true;
 }
 
-function visaDetaljer(dok, rattadeFalt) {
+function visaDetaljer() {
   definitionslista(
     document.getElementById("detaljer"),
     DETALJFALT.map(([nyckel, etikett]) => [
       etikett,
-      dok.detaljer[nyckel],
+      oppetDokument.detaljer[nyckel],
       rattadeFalt.has(nyckel) ? "rattad" : "",
     ])
   );
+}
+
+function tidpunkt() {
+  const nu = new Date();
+  return new Date(nu - nu.getTimezoneOffset() * 60000).toISOString().slice(0, 19);
+}
+
+function ritaLogg() {
+  loggrader.replaceChildren();
+  for (const rad of logg) {
+    const tr = document.createElement("tr");
+    for (const cell of [
+      rad.tidpunkt,
+      rad.regel,
+      rad.etikett || rad.falt,
+      (rad.fore || "(tomt)") + " → " + (rad.efter || "(tomt)"),
+    ]) {
+      const td = document.createElement("td");
+      td.textContent = text(cell);
+      tr.append(td);
+    }
+    loggrader.append(tr);
+  }
+  loggantal.textContent = "(" + logg.length + ")";
+  loggpanel.hidden = logg.length === 0;
+}
+
+function laggTillLogg(rad) {
+  logg.push(rad);
+  ritaLogg();
 }
 
 function nollstallGranskning() {
   granskningsstatus.hidden = true;
   fyndlista.hidden = true;
   fyndlista.replaceChildren();
+  spärr.hidden = true;
+  rattadeFalt = new Set();
+  logg = [];
+  ritaLogg();
 }
 
 async function visaArende(arendenummer) {
@@ -125,9 +168,10 @@ async function visaArende(arendenummer) {
   const arende = await svar.json();
   const dok = arende.dokument;
   oppetArende = arende.arendenummer;
+  oppetDokument = dok;
   nollstallGranskning();
 
-  visaDetaljer(dok, new Set());
+  visaDetaljer();
   definitionslista(
     document.getElementById("kontakter"),
     dok.kontakter.map((k) => [
@@ -159,6 +203,45 @@ async function visaArende(arendenummer) {
   tillbaka.hidden = false;
 }
 
+function beslut(fynd, li, knappar, godkand) {
+  // Beslutet lever i vyn under demot. Godkänner registratorn skrivs värdet in i
+  // Detaljer-panelen; testdatan på servern rörs inte (M3 — människan avgör).
+  if (godkand && oppetDokument.detaljer[fynd.falt] !== undefined) {
+    oppetDokument.detaljer[fynd.falt] = fynd.forslag;
+    rattadeFalt.add(fynd.falt);
+    visaDetaljer();
+  }
+  li.classList.toggle("avvisad", !godkand);
+  const kvitto = document.createElement("p");
+  kvitto.className = "kvitto";
+  kvitto.textContent = godkand
+    ? "Godkänt av Rex Ljungqvist — värdet är infört."
+    : "Avvisat av Rex Ljungqvist — värdet står kvar.";
+  knappar.replaceWith(kvitto);
+  laggTillLogg({
+    tidpunkt: tidpunkt(),
+    regel: fynd.regel,
+    falt: fynd.falt,
+    etikett: fynd.etikett,
+    fore: fynd.fore,
+    efter: godkand ? fynd.forslag : fynd.fore,
+  });
+}
+
+function forslagsknappar(fynd, li) {
+  const knappar = document.createElement("p");
+  knappar.className = "knappar";
+  for (const [etikett, godkand] of [["Godkänn", true], ["Avvisa", false]]) {
+    const knapp = document.createElement("button");
+    knapp.type = "button";
+    knapp.className = godkand ? "godkann" : "avvisa";
+    knapp.textContent = etikett;
+    knapp.addEventListener("click", () => beslut(fynd, li, knappar, godkand));
+    knappar.append(knapp);
+  }
+  return knappar;
+}
+
 function fyndrad(fynd) {
   const li = document.createElement("li");
   li.className = "fynd-" + fynd.utfall.replace("ä", "a").replace("ö", "o");
@@ -182,6 +265,13 @@ function fyndrad(fynd) {
     li.append(andring);
   }
 
+  if (fynd.utfall === "förslag" && fynd.forslag) {
+    const andring = document.createElement("p");
+    andring.className = "andring";
+    andring.textContent = (fynd.fore || "(tomt)") + " → " + fynd.forslag + " (förslag)";
+    li.append(andring, forslagsknappar(fynd, li));
+  }
+
   const regel = document.createElement("p");
   regel.className = "regel";
   regel.textContent = "Regel: " + fynd.regel;
@@ -191,10 +281,20 @@ function fyndrad(fynd) {
 }
 
 function visaRapport(rapport) {
-  const rattadeFalt = new Set(
+  oppetDokument = rapport.arende.dokument;
+  rattadeFalt = new Set(
     rapport.fynd.filter((f) => f.utfall === "rättad").map((f) => f.falt)
   );
-  visaDetaljer(rapport.arende.dokument, rattadeFalt);
+  visaDetaljer();
+
+  // M5: ärendet stoppas innan det går vidare, och AI:n avgör ingenting själv.
+  spärr.hidden = rapport.status !== "kräver_bedömning";
+  spärr.textContent =
+    "Stoppat: ärendet går inte vidare till handläggning förrän flaggorna nedan " +
+    "är bemötta av en människa.";
+
+  logg = rapport.logg.slice();
+  ritaLogg();
 
   granskningsstatus.className = "status status-" + rapport.status.replace("ä", "a").replace("ö", "o");
   granskningsstatus.textContent = STATUSTEXT[rapport.status] || rapport.status;

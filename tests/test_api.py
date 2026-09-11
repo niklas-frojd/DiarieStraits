@@ -85,3 +85,34 @@ def test_kvalitetsgranska_lamnar_hamtningen_oror():
 
 def test_kvalitetsgranska_okant_arende_ger_404():
     assert client.post("/api/arenden/2026-99999/kvalitetsgranska").status_code == 404
+
+
+# --- Inkrement 4: förslag, bedömning och logg ---------------------------------
+
+
+def test_gransfallet_stoppas_for_mansklig_bedomning():
+    rapport = client.post("/api/arenden/2026-00065/kvalitetsgranska").json()
+    assert rapport["status"] == "kräver_bedömning"
+
+
+def test_rapporten_bar_loggen():
+    rapport = client.post("/api/arenden/2026-00066/kvalitetsgranska").json()
+    assert len(rapport["logg"]) == len(rapport["fynd"])
+    assert set(rapport["logg"][0]) == {
+        "tidpunkt",
+        "regel",
+        "falt",
+        "etikett",
+        "utfall",
+        "fore",
+        "efter",
+    }
+
+
+def test_forslagen_nar_ut_i_api_svaret():
+    fynd = client.post("/api/arenden/2026-00066/kvalitetsgranska").json()["fynd"]
+    forslag = {f["falt"]: f["forslag"] for f in fynd if f["utfall"] == "förslag"}
+    assert forslag == {
+        "handlingstyp": "2.3.1-5 - Korrespondens",
+        "process": "2.3.1 - Kommunicera internt",
+    }

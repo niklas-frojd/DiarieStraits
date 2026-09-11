@@ -30,6 +30,7 @@ class Fynd:
     forklaring: str
     fore: str = ""
     efter: str = ""
+    forslag: str = ""  # Värdet en människa kan godkänna. Bara utfallet FÖRSLAG.
 
 
 class Checker:
