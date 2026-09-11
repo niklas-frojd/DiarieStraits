@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Janus — Redo för diarieföring</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="toppbar">
+    <nav class="brodsmula" id="brodsmula"></nav>
+    <span class="hjalp">Hjälp</span>
+  </header>
+
+  <div class="verktygsrad">
+    <a href="/" class="tillbaka" id="tillbaka" hidden>‹ Tillbaka till listan</a>
+    <input class="sok" type="search" placeholder="Skriv in sökord" aria-label="Sök">
+    <span class="avancerad">Avancerad sökning</span>
+    <span class="anvandare">Rex Ljungqvist</span>
+  </div>
+
+  <main>
+    <section id="listvy">
+      <h1>Redo för diarieföring</h1>
+      <table class="lista">
+        <thead>
+          <tr>
+            <th>Ärende</th>
+            <th>Titel</th>
+            <th>Dokumentkategori</th>
+            <th>Ankomstdatum</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="listrader"></tbody>
+      </table>
+    </section>
+
+    <section id="detaljvy" class="detaljvy" hidden>
+      <div class="kolumn">
+        <div class="panel">
+          <h2><span class="ikon ikon-fil"></span> Filer <span class="antal" id="filantal"></span></h2>
+          <table class="filer">
+            <thead>
+              <tr><th>Titel</th><th>Typ</th><th>Filstorlek</th><th>Senast ändrad</th></tr>
+            </thead>
+            <tbody id="filrader"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="kolumn smal">
+        <div class="panel">
+          <h2><span class="ikon ikon-info"></span> Detaljer</h2>
+          <dl id="detaljer"></dl>
+        </div>
+        <div class="panel">
+          <h2><span class="ikon ikon-kontakt"></span> Kontakter</h2>
+          <dl id="kontakter"></dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

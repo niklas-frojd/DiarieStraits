@@ -1,0 +1,153 @@
+[
+  {
+    "arendenummer": "2026-00064",
+    "titel": "Test Korrekt",
+    "dokument": {
+      "titel": "Test Korrekt",
+      "dokumentnummer": "2026-00064-1",
+      "detaljer": {
+        "arende": "2026-00064 Test Korrekt",
+        "ankomstdatum": "2026-08-25",
+        "dokumentdatum": "2026-08-25",
+        "signerad": "",
+        "signeringsdatum": "",
+        "sista_svarsdatum": "",
+        "dokumentkategori": "Inkommande",
+        "status": "Registrerat",
+        "ansvarig_enhet": "Stöd - HR",
+        "ansvarig_person": "Rex Ljungqvist",
+        "skyddskod": "Offentlig",
+        "atkomstgrupp": "Alla",
+        "delarkiv": "ESV 2022",
+        "handlingstyp": "2.3.1-5 - Korrespondens",
+        "process": "2.3.1 - Kommunicera internt"
+      },
+      "registrering": {
+        "handlingstyp": "2.3.1-5 (Korrespondens)",
+        "dokumentkategori": "Inkommande",
+        "skyddskod": "Allmän handling - Offentlig",
+        "atkomstgrupp": "Alla",
+        "titel": "Test Korrekt",
+        "avsandare": "Statskontoret",
+        "kopia_till": "",
+        "ankomstdatum": "2026-08-25",
+        "dokumentdatum": "2026-08-25",
+        "sista_svarsdatum": "",
+        "ansvarig": "Rex Ljungqvist - Stöd - HR",
+        "status": "Registrerat",
+        "avsandarens_ref": "",
+        "antal_bilagor": "",
+        "sparat_pa_papper": "Nej"
+      },
+      "filer": [
+        { "titel": "Test", "typ": "e-post", "filstorlek": "50 KB", "senast_andrad": "2026-08-25" },
+        { "titel": "Test", "typ": "pdf", "filstorlek": "67 KB", "senast_andrad": "2026-08-25" }
+      ],
+      "kontakter": [
+        { "roll": "Avsändare", "kontakt": "Statskontoret", "anteckning": "" },
+        { "roll": "Mottagare", "kontakt": "Rex Ljungqvist", "anteckning": "Mottagen för kännedom" }
+      ]
+    }
+  },
+  {
+    "arendenummer": "2026-00066",
+    "titel": "Test Felaktigt UTY GGG BBO",
+    "_kommentar": "Fall 2. I skärmdumpen är Dokumentdatum tomt. Enligt plan.md (Antaganden) kompletteras fallet här med ett felskrivet datum i stället, så att inkrement 2 har något att rätta maskinellt.",
+    "dokument": {
+      "titel": "UUY HHT BB",
+      "dokumentnummer": "2026-00066-1",
+      "detaljer": {
+        "arende": "2026-00066 Test Felaktigt UTY GGG BBO",
+        "ankomstdatum": "2026-08-25",
+        "dokumentdatum": "25/8-2026",
+        "signerad": "",
+        "signeringsdatum": "",
+        "sista_svarsdatum": "",
+        "dokumentkategori": "Inkommande",
+        "status": "Registrerat",
+        "ansvarig_enhet": "Statskontoret",
+        "ansvarig_person": "",
+        "skyddskod": "Offentlig",
+        "atkomstgrupp": "Alla",
+        "delarkiv": "ESV 2022",
+        "handlingstyp": "6.1-1 - Beslut",
+        "process": "6.1 - Hantera revisionsstrategi"
+      },
+      "registrering": {
+        "handlingstyp": "6.1-1 (Beslut)",
+        "dokumentkategori": "Inkommande",
+        "skyddskod": "Allmän handling - Offentlig",
+        "atkomstgrupp": "Alla",
+        "titel": "UUY HHT BB",
+        "avsandare": "Rex Ljungqvist",
+        "kopia_till": "",
+        "ankomstdatum": "2026-08-25",
+        "dokumentdatum": "25/8-2026",
+        "sista_svarsdatum": "",
+        "ansvarig": "",
+        "status": "Registrerat",
+        "avsandarens_ref": "",
+        "antal_bilagor": "",
+        "sparat_pa_papper": "Nej"
+      },
+      "filer": [
+        { "titel": "Test", "typ": "e-post", "filstorlek": "50 KB", "senast_andrad": "2026-08-25" }
+      ],
+      "kontakter": [
+        { "roll": "Avsändare", "kontakt": "Rex Ljungqvist", "anteckning": "" },
+        { "roll": "Mottagare", "kontakt": "Statskontoret", "anteckning": "Mottagen för kännedom" }
+      ]
+    }
+  },
+  {
+    "arendenummer": "2026-00065",
+    "titel": "Upphandling av utvärderingstjänster",
+    "_kommentar": "Fall 3. Konstruerat gränsfall utan skärmdump.",
+    "dokument": {
+      "titel": "Komplettering till anbud, benchmarking av utvärderingsmetod",
+      "dokumentnummer": "2026-00065-1",
+      "detaljer": {
+        "arende": "2026-00065 Upphandling av utvärderingstjänster",
+        "ankomstdatum": "2026-08-25",
+        "dokumentdatum": "2026-08-22",
+        "signerad": "",
+        "signeringsdatum": "",
+        "sista_svarsdatum": "",
+        "dokumentkategori": "Inkommande",
+        "status": "Registrerat",
+        "ansvarig_enhet": "Stöd - HR",
+        "ansvarig_person": "Rex Ljungqvist",
+        "skyddskod": "Offentlig",
+        "atkomstgrupp": "Alla",
+        "delarkiv": "ESV 2022",
+        "handlingstyp": "2.3.1-5 - Korrespondens",
+        "process": "2.3.1 - Kommunicera internt"
+      },
+      "registrering": {
+        "handlingstyp": "2.3.1-5 (Korrespondens)",
+        "dokumentkategori": "Inkommande",
+        "skyddskod": "Allmän handling - Offentlig",
+        "atkomstgrupp": "Alla",
+        "titel": "Komplettering till anbud, benchmarking av utvärderingsmetod",
+        "avsandare": "anna.svensson@konsultbolaget.se",
+        "kopia_till": "registrator@statskontoret.se",
+        "ankomstdatum": "2026-08-25",
+        "dokumentdatum": "2026-08-22",
+        "sista_svarsdatum": "",
+        "ansvarig": "Rex Ljungqvist - Stöd - HR",
+        "status": "Registrerat",
+        "avsandarens_ref": "",
+        "antal_bilagor": "1",
+        "sparat_pa_papper": "Nej"
+      },
+      "filer": [
+        { "titel": "SV: Komplettering till anbud", "typ": "e-post (tråd med två meddelanden)", "filstorlek": "62 KB", "senast_andrad": "2026-08-22" },
+        { "titel": "Prisbilaga", "typ": "xlsx", "filstorlek": "48 KB", "senast_andrad": "2026-08-22" }
+      ],
+      "kontakter": [
+        { "roll": "Avsändare", "kontakt": "anna.svensson@konsultbolaget.se", "anteckning": "" },
+        { "roll": "Mottagare", "kontakt": "Rex Ljungqvist", "anteckning": "Mottagen för kännedom" }
+      ]
+    }
+  }
+]
