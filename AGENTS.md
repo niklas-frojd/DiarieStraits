@@ -26,14 +26,17 @@ Vyn är en förenklad efterliknelse av Janus (Public 360), inte hela P360.
 ## Kör och testa
 
 ```
-uvicorn app.main:app --reload     # → localhost:8000
-pytest                            # alla tester
-pytest -k <regelnamn>             # en enskild regel
+uv run uvicorn app.main:app --reload   # → localhost:8000
+uv run pytest                          # alla tester
+uv run pytest -k <regelnamn>           # en enskild regel
 ```
+
+`uv` riggar miljön själv (Python >=3.11 enligt `pyproject.toml`); ingen aktivering behövs.
 
 Stacken är Python med FastAPI som serverar både API och statisk HTML, testdata i
 JSON och tester med pytest (plan.md, Antaganden — bör backas in i `adr.md` som
-Beslut 4). `src/` är tomt: inkrement 1 är skelettet som ska skapa det.
+Beslut 4). Koden ligger i `app/`: `main.py` (API och statisk vy), `data.py`,
+`data/arenden.json` (testdata) och `static/` (gränssnittet). Tester i `tests/`.
 
 ## Arkitektur
 
