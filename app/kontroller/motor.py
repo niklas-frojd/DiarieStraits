@@ -18,10 +18,11 @@ from app.kontroller.gransfall import (
 )
 from app.kontroller.klassificering import KlassificeringsChecker
 from app.kontroller.modell import Utfall
+from app.kontroller.titel import TitelChecker
 
 # Ordningen här styr bara i vilken ordning kontrollerna körs — Datumformat måste
 # gå före AnkomstdatumIOrdning, som jämför färdigrättade datum. Hur fynden radas
-# upp i vyn avgörs av `sortera`. Inkrement 5 lägger till titelkontrollen här.
+# upp i vyn avgörs av `sortera`.
 REGISTER = [
     ObligatoriskaFalt(),
     Datumformat(),
@@ -32,6 +33,7 @@ REGISTER = [
     KontaktForm(),
     AnkomstdatumIOrdning(),
     ExternProcess(),
+    TitelChecker(),
 ]
 
 # Det som stoppar ärendet ligger överst, det som redan är gjort underst

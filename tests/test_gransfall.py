@@ -96,13 +96,15 @@ def test_avsandare_utan_mejladress_lamnas_at_klassificeringen():
 # --- Hela gränsfallet ----------------------------------------------------------
 
 
-def test_gransfallet_far_sina_sex_flaggor():
-    """Sex av sju flaggor ur testfallsdokumentet. Flagga 6 hör till inkrement 5."""
+def test_gransfallet_far_sina_sju_flaggor():
+    """Alla sju flaggorna ur testfallsdokumentet. Flagga 6 — det engelska ordet i
+    titeln — kom med i inkrement 5 och faller ut som `titel-språk`."""
     rapport = kvalitetsgranska(hamta_arende("2026-00065"))
     assert [f["regel"] for f in rapport["fynd"]] == [
         "sekretess",
         "blandad-riktning",
         "ankomstdatum",
+        "titel-språk",
         "kontaktform",
         "extern-process",
         "kopia-till",

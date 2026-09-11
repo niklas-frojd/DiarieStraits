@@ -134,6 +134,8 @@ def test_felaktigt_arende_far_en_rattning_och_flera_flaggor():
     assert regler == [
         "obligatoriska-fält",
         "klassificering",
+        "titel-obegriplig",  # ärendets titel
+        "titel-obegriplig",  # dokumentets titel
         "klassificering",
         "klassificering",
         "datumformat",
