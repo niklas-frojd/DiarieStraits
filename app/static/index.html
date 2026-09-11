@@ -37,12 +37,22 @@
     </section>
 
     <section id="detaljvy" class="detaljvy" hidden>
+      <p class="spärr" id="spärr" hidden></p>
       <div class="kolumn">
         <div class="panel granskning">
           <h2><span class="ikon ikon-kontroll"></span> Kvalitetskontroll</h2>
           <button type="button" id="granska">Kvalitetsgranska</button>
           <p class="status" id="granskningsstatus" hidden></p>
           <ul class="fynd" id="fyndlista" hidden></ul>
+          <details class="logg" id="logg" hidden>
+            <summary>Granskningslogg <span class="antal" id="loggantal"></span></summary>
+            <table>
+              <thead>
+                <tr><th>Tidpunkt</th><th>Regel</th><th>Fält</th><th>Före → efter</th></tr>
+              </thead>
+              <tbody id="loggrader"></tbody>
+            </table>
+          </details>
         </div>
         <div class="panel">
           <h2><span class="ikon ikon-fil"></span> Filer <span class="antal" id="filantal"></span></h2>

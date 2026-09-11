@@ -45,3 +45,33 @@ speglar tom `ansvarig_person` — men det är konstruerat, inte transkriberat.
    fallerar blir listan tyst tom. En rad i `catch` räcker.
 5. **Varningar från `starlette.testclient`** om httpx vid varje testkörning. Brus
    från beroendet, inte från koden.
+
+## 2026-09-11 — efter inkrement 4
+
+Granskat: `app/kontroller/` i sin helhet, `app/static/`, `tests/`. Planens
+pytest-kontroll är körd: 71 tester gröna, och 2026-00065 får status
+`kräver_bedömning`. Klickkontrollen är **inte** körd — se `friction.md` rad 12.
+
+### Vad som byggdes
+
+`Fynd` fick fältet `forslag`, det värde en människa kan godkänna. Motorn
+sorterar fynden efter hur strängt utfallet är och bygger en logg med tidpunkt,
+regel och före/efter-värde. Fem nya Checkers i `gransfall.py` täcker flagga 1,
+2, 3, 5 och 7 ur Fall 3 i `testfall-metadata.md`. Vyn fick spärrbanner,
+Godkänn/Avvisa per förslag och en logg-panel.
+
+### Att bära med sig
+
+1. **Heuristiken i `gransfall.py` är mockad.** Sekretessflaggan tänder på två
+   signalord i ärendets och filernas titlar, riktningsflaggan på ordet "tråd" i
+   filtypen. Det räcker för de tre testärendena och inte för något annat. Det är
+   precis den gräns Beslut 1 pekar ut, och det måste sägas i demot.
+2. **Besluten lever bara i webbläsaren.** Ett godkänt förslag skrivs in i
+   Detaljer-panelen och i loggen, men försvinner vid omladdning. Medvetet — det
+   håller demot omkörbart och API-ytan liten — men spårbarheten i `adr.md` är
+   därmed bara halvvägs: motorns logg går till servern, människans beslut inte.
+3. **Flagga 6 saknas.** Det engelska ordet i 2026-00065:s titel fångas först när
+   inkrement 5 bygger titelkontrollen. Gränsfallet visar sex av sju flaggor.
+4. **`ExternProcess` och `KontaktForm` tänder båda på snabel-a i avsändaren.** De
+   är avsiktligt två regler med två olika utfall, men flaggar samma ärende av
+   samma grundorsak. Om demot känns repetitivt är det den raden att stryka.

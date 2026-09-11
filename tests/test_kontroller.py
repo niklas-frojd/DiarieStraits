@@ -1,4 +1,9 @@
-"""Kontroll för inkrement 2: en testgrupp per regel i regelmotorn."""
+"""Kontroll för inkrement 2: en testgrupp per regel i regelmotorn.
+
+Inkrement 4 lade till sorteringen, loggen och förslagen längst ned.
+"""
+
+from datetime import datetime
 
 import pytest
 
@@ -123,18 +128,24 @@ def test_korrekt_arende_passerar_rent():
     assert rapport["status"] == "rent"
 
 
-def test_felaktigt_arende_far_en_rattning_och_en_flagga():
+def test_felaktigt_arende_far_en_rattning_och_flera_flaggor():
     rapport = kvalitetsgranska(hamta_arende("2026-00066"))
     regler = [f["regel"] for f in rapport["fynd"]]
-    assert regler == ["obligatoriska-fält", "datumformat"]
+    assert regler == [
+        "obligatoriska-fält",
+        "klassificering",
+        "klassificering",
+        "klassificering",
+        "datumformat",
+    ]
     assert rapport["antal_rattade"] == 1
     assert rapport["status"] == "kräver_bedömning"
 
 
 def test_gransfallet_far_sin_automatiska_rattning():
     rapport = kvalitetsgranska(hamta_arende("2026-00065"))
-    assert [f["regel"] for f in rapport["fynd"]] == ["kopia-till"]
-    assert rapport["status"] == "rättat"
+    assert "kopia-till" in [f["regel"] for f in rapport["fynd"]]
+    assert rapport["antal_rattade"] == 1
 
 
 def test_varje_fynd_har_en_forklaring():
@@ -147,7 +158,41 @@ def test_varje_fynd_har_en_forklaring():
 
 def test_granskningen_ror_inte_testdatan():
     """Demot ska gå att köra om: samma ärende, samma svar."""
-    forst = kvalitetsgranska(hamta_arende("2026-00066"))
-    igen = kvalitetsgranska(hamta_arende("2026-00066"))
+    nu = datetime(2026, 9, 11, 17, 0, 0)
+    forst = kvalitetsgranska(hamta_arende("2026-00066"), nu=nu)
+    igen = kvalitetsgranska(hamta_arende("2026-00066"), nu=nu)
     assert forst == igen
     assert hamta_arende("2026-00066")["dokument"]["detaljer"]["dokumentdatum"] == "25/8-2026"
+
+
+# --- Inkrement 4: ordning, förslag och logg ------------------------------------
+
+
+@pytest.mark.parametrize("nummer", ["2026-00064", "2026-00065", "2026-00066"])
+def test_fynden_kommer_i_strangaste_ordning(nummer):
+    """Det som stoppar ärendet ligger överst, det som redan är gjort underst."""
+    rang = {"kräver_bedömning": 0, "förslag": 1, "rättad": 2}
+    ordning = [rang[f["utfall"]] for f in kvalitetsgranska(hamta_arende(nummer))["fynd"]]
+    assert ordning == sorted(ordning)
+
+
+@pytest.mark.parametrize("nummer", ["2026-00064", "2026-00065", "2026-00066"])
+def test_forslag_rattar_aldrig_sjalvt(nummer):
+    """M5: ett förslag bär ett värde men skriver inte in det."""
+    for fynd in kvalitetsgranska(hamta_arende(nummer))["fynd"]:
+        if fynd["utfall"] == "förslag":
+            assert fynd["forslag"]
+            assert fynd["efter"] == ""
+
+
+@pytest.mark.parametrize("nummer", ["2026-00064", "2026-00065", "2026-00066"])
+def test_loggen_har_en_rad_per_fynd(nummer):
+    """Spårbarheten enligt adr.md: regel, före/efter-värde och tidpunkt."""
+    nu = datetime(2026, 9, 11, 17, 0, 0)
+    rapport = kvalitetsgranska(hamta_arende(nummer), nu=nu)
+    assert len(rapport["logg"]) == len(rapport["fynd"])
+    for rad, fynd in zip(rapport["logg"], rapport["fynd"]):
+        assert rad["tidpunkt"] == "2026-09-11T17:00:00"
+        assert rad["regel"] == fynd["regel"]
+        assert rad["fore"] == fynd["fore"]
+        assert rad["efter"] == (fynd["efter"] or fynd["forslag"])
