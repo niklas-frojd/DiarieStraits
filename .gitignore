@@ -1,10 +1,9 @@
 # Python
+.venv/
 __pycache__/
-*.py[cod]
 .pytest_cache/
 
-# Miljön som uv riggar
-.venv/
-
-# macOS
+# OS / editor noise
 .DS_Store
+Thumbs.db
+*.swp
