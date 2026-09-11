@@ -1,0 +1,12 @@
+{
+  "_kommentar": "Mockad delmängd av klassificeringsstrukturen, enligt plan.md (Antaganden): koderna är hämtade ur skärmdumparna och checklistan. Vilka dokumentkategorier en kod tillåter är ett antagande för demot, inte hämtat ur Statskontorets struktur. Interna kontakter är likaså mockade.",
+  "processer": {
+    "2.3.1": { "namn": "Kommunicera internt", "dokumentkategorier": ["Inkommande", "Utgående", "Upprättad"] },
+    "6.1": { "namn": "Hantera revisionsstrategi", "dokumentkategorier": ["Upprättad"] }
+  },
+  "handlingstyper": {
+    "2.3.1-5": { "namn": "Korrespondens", "dokumentkategorier": ["Inkommande", "Utgående"] },
+    "6.1-1": { "namn": "Beslut", "dokumentkategorier": ["Upprättad"] }
+  },
+  "interna_kontakter": ["Rex Ljungqvist"]
+}
