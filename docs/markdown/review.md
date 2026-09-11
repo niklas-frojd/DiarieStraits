@@ -23,7 +23,7 @@ speglar tom `ansvarig_person` — men det är konstruerat, inte transkriberat.
 
 ### Att rätta före inkrement 2
 
-1. **`hamta_arende` lämnar ut den delade dikten** (`app/data.py:25`). `ARENDEN`
+1. ~~**`hamta_arende` lämnar ut den delade dikten**~~ *(åtgärdat i inkrement 2: `hamta_arende` returnerar en kopia och motorn granskar en `deepcopy`.)* (`app/data.py:25`). `ARENDEN`
    läses in en gång vid import, och funktionen returnerar objektet ur listan utan
    kopia. Så fort inkrement 2 skriver tillbaka en automatisk rättning ändras
    modulens globala testdata för resten av processen — mellan anrop och mellan

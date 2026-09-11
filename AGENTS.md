@@ -36,7 +36,9 @@ uv run pytest -k <regelnamn>           # en enskild regel
 Stacken är Python med FastAPI som serverar både API och statisk HTML, testdata i
 JSON och tester med pytest (plan.md, Antaganden — bör backas in i `adr.md` som
 Beslut 4). Koden ligger i `app/`: `main.py` (API och statisk vy), `data.py`,
-`data/arenden.json` (testdata) och `static/` (gränssnittet). Tester i `tests/`.
+`data/arenden.json` (testdata), `kontroller/` (regelmotorn — en modul per
+kontrollområde, registrerade i `kontroller/motor.py`) och `static/`
+(gränssnittet). Tester i `tests/`.
 
 ## Arkitektur
 

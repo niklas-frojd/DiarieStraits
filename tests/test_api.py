@@ -64,3 +64,24 @@ def test_startsidan_ger_html():
     svar = client.get("/")
     assert svar.status_code == 200
     assert "text/html" in svar.headers["content-type"]
+
+
+# --- Inkrement 2: Kvalitetsgranska-endpointen ---------------------------------
+
+
+def test_kvalitetsgranska_ger_rapport():
+    rapport = client.post("/api/arenden/2026-00066/kvalitetsgranska").json()
+    assert rapport["status"] == "kräver_bedömning"
+    assert rapport["antal_rattade"] == 1
+    assert rapport["arende"]["dokument"]["detaljer"]["dokumentdatum"] == "2026-08-25"
+
+
+def test_kvalitetsgranska_lamnar_hamtningen_oror():
+    """Rättningen lever i rapporten, inte i testdatan."""
+    client.post("/api/arenden/2026-00065/kvalitetsgranska")
+    registrering = client.get("/api/arenden/2026-00065").json()["dokument"]["registrering"]
+    assert registrering["kopia_till"] == "registrator@statskontoret.se"
+
+
+def test_kvalitetsgranska_okant_arende_ger_404():
+    assert client.post("/api/arenden/2026-99999/kvalitetsgranska").status_code == 404
